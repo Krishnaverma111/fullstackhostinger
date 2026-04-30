@@ -13,8 +13,7 @@ services:
       - ./nurserybackend/.env
 
   client:
-    build:
-      context: ./nurseryFrontend   # ✔️ bas ye hi rakho
+    build: ./nurseryFrontend
     container_name: react-client
     ports:
       - "5174:3000"
