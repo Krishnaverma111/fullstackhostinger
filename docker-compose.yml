@@ -1,23 +1,23 @@
+version: "3.9"
+
 services:
   server:
     build: ./nurserybackend
     container_name: express-server
     ports:
-      - "5000:5000"   # ✅ same port rakho
+      - "5000:5000"
     networks:
       - fullstack-net
     restart: unless-stopped
     env_file:
-      - ./nurserybackend/.env  
+      - ./nurserybackend/.env
 
   client:
     build:
-      context: ./nurseryFrontend
-      args:
-        - VITE_API_URL=http://localhost:5000   # ✅ ENV pass
+      context: ./nurseryFrontend   # ✔️ bas ye hi rakho
     container_name: react-client
     ports:
-      - "3000:3000"   # ✅ correct port
+      - "5174:3000"
     networks:
       - fullstack-net
     depends_on:
