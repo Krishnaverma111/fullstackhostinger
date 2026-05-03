@@ -42,11 +42,13 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
     };
   }, []);
 
+  const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   const isMobile = windowWidth <= 768;
 
   const fetchItems = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/products");
+      const res = await axios.get(`${API}/api/products`);
       if(setInventory) setInventory(res.data);
     } catch (err) { console.error("Database connection failed", err); }
   };
