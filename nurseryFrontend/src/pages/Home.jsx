@@ -161,6 +161,7 @@ import Half from './Half';
 import Review from './Review';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag } from "lucide-react";
+ const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
 const Home = ({ addToCart }) => {
   const [inventory, setInventory] = useState([]);
