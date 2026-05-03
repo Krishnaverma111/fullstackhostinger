@@ -91,7 +91,7 @@ app.use(cors({
     // const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
 
     // 🟢 NEW (ADD THIS)
-    const isAllowed = allowedOrigins.includes(origin);
+   const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
 
     if (isAllowed) {
       callback(null, true);
