@@ -67,6 +67,8 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
   "http://localhost:3000",
+  "http://react-client:3000", 
+
   "http://93.127.172.136",
   "http://93.127.172.136:5173",
   "http://mamtanursery.com",
@@ -81,10 +83,13 @@ app.use(cors({
   origin: (origin, callback) => {
     console.log("🌐 Incoming Origin:", origin);
 
-    // allow Postman / mobile apps
     if (!origin) return callback(null, true);
 
-    const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
+    // 🔴 OLD (remove this)
+    // const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
+
+    // 🟢 NEW (ADD THIS)
+    const isAllowed = allowedOrigins.includes(origin);
 
     if (isAllowed) {
       callback(null, true);
