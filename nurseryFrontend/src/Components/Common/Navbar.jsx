@@ -53,6 +53,7 @@ const Navbar = ({ cartItems = [] }) => {
     { name: "Accessories", path: "/accessories" },
     { name: "Gifts", path: "/gifts" },
     { name: "Location", path: "/location" },
+    { name: "offers", path: "/offers" },
   ];
 
   const containerVariants = {

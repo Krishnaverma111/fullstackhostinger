@@ -159,26 +159,19 @@ import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import Half from './Half';
 import Review from './Review';
-import { Link } from 'react-router-dom';
-import {
-  Leaf,
-  Sprout,
-  Flower2,
-  Waves,
-  ShoppingBag
-} from "lucide-react";
+import { Link, useLocation } from 'react-router-dom';
+import { ShoppingBag } from "lucide-react";
 
 const Home = ({ addToCart }) => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const location = useLocation();
 
-  const slides = [
-    { id: 1, img: "src/assets/banner4.jpeg", title: "Bring Nature Home", sub: "Premium Indoor Plants", icon: <Leaf size={48} className="text-green-400" /> },
-    { id: 2, img: "src/assets/banner2.jpeg", title: "Grow Your Own", sub: "Organic Seeds & Bulbs", icon: <Sprout size={48} className="text-emerald-400" /> },
-    { id: 3, img: "src/assets/banner1.jpeg", title: "Decorate Better", sub: "Exotic Planters & Pots", icon: <Flower2 size={48} className="text-pink-400" /> },
-    { id: 4, img: "src/assets/banner3.jpeg", title: "Expert Care", sub: "Best Fertilizers & Soil", icon: <Waves size={48} className="text-blue-400" /> }
-  ];
+  // 🔥 Default category = plants
+  const currentCategory =
+    location.pathname === "/"
+      ? "plants"
+      : location.pathname.replace("/", "").toLowerCase();
 
   // 🔥 API CALL
   const fetchProducts = async () => {
@@ -196,50 +189,46 @@ const Home = ({ addToCart }) => {
     fetchProducts();
   }, []);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+  // 🔥 Filter function
+  const filteredProducts = inventory.filter(
+    (item) => item.category?.toLowerCase() === currentCategory
+  );
 
   return (
     <div className="min-h-screen bg-[#fdfdfd] text-slate-900 pt-28">
 
-      {/* HERO */}
-      <section className="relative h-[450px] mx-4 mt-10 overflow-hidden rounded-3xl">
-        <div className="flex h-full transition-transform duration-1000"
-          style={{ transform: `translateX(-${currentSlide * 100}%)` }}>
-          {slides.map((slide) => (
-            <div key={slide.id} className="min-w-full h-full relative">
-              <img src={slide.img} className="w-full h-full object-cover" />
-              <div className="absolute inset-0 bg-black/40"></div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* 🔥 LOADING */}
+      {loading ? (
+        <div className="text-center py-20 font-bold">Loading...</div>
+      ) : filteredProducts.length === 0 ? (
+        <div className="text-center py-20 font-bold">No Products Found</div>
+      ) : (
+        <section className="py-20 px-6 max-w-[1400px] mx-auto bg-slate-50/50 rounded-[4rem] border border-slate-100 my-10">
 
-      {/* 🔥 OLD PREMIUM CARD DESIGN */}
-      <section className="py-20 px-6 max-w-[1400px] mx-auto bg-slate-50/50 rounded-[4rem] border border-slate-100 my-10">
-        <div className="flex justify-between items-end mb-12">
-          <h2 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter">
-            Premium <span className="text-green-600">Selection</span>
-          </h2>
-          <Link to="/plants" className="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-green-600">
-            View All
-          </Link>
-        </div>
+          {/* 🔥 Title */}
+          <div className="flex justify-between items-end mb-12">
+            <h2 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter">
+              {currentCategory} <span className="text-green-600">Collection</span>
+            </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <Link
+              to={`/${currentCategory}`}
+              className="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-green-600"
+            >
+              View All
+            </Link>
+          </div>
 
-          {loading ? (
-            <p className="col-span-full text-center">Loading...</p>
-          ) : inventory.length === 0 ? (
-            <p className="col-span-full text-center">No Products Found</p>
-          ) : (
-            inventory.slice(0, 4).map((item) => (
-              <div key={item._id} className="bg-white p-6 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 group">
+          {/* 🔥 GRID */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
+            {filteredProducts.map((item) => (
+              <div
+                key={item._id}
+                className="bg-white p-6 rounded-[3rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 group"
+              >
+
+                {/* IMAGE */}
                 <figure className="relative aspect-square overflow-hidden rounded-[2.5rem] mb-6 bg-slate-50">
                   <img
                     src={item.image}
@@ -248,14 +237,16 @@ const Home = ({ addToCart }) => {
                   />
 
                   <div className="absolute top-4 right-4 bg-white/80 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest text-green-600">
-                    {item.category || "Premium"}
+                    {item.category}
                   </div>
                 </figure>
 
+                {/* NAME */}
                 <h3 className="font-black text-lg uppercase italic mb-2">
                   {item.name}
                 </h3>
 
+                {/* PRICE */}
                 <div className="flex justify-between items-center mb-6">
                   <span className="text-2xl font-black">₹{item.price}</span>
                   <span className="text-xs text-gray-400">
@@ -263,6 +254,7 @@ const Home = ({ addToCart }) => {
                   </span>
                 </div>
 
+                {/* BUTTON */}
                 <button
                   onClick={() => addToCart(item)}
                   className="w-full bg-black text-white py-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-green-600 transition"
@@ -271,11 +263,11 @@ const Home = ({ addToCart }) => {
                   Add To Cart
                 </button>
               </div>
-            ))
-          )}
+            ))}
 
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       <Half />
       <Review />
