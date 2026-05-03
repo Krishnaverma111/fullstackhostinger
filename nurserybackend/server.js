@@ -28,8 +28,7 @@ app.use(cors({
 }));
 
 // Preflight requests fix
-app.options('*', cors());
-
+app.options('/*', cors());
 // ================= BODY PARSER =================
 app.use(express.json());
 
