@@ -18,12 +18,14 @@ const Seed = ({ addToCart }) => {
   const [searchQuery, setSearchQuery] = useState("");
   
   const simillarContainerRef = useRef(null);
+  const API_URL = import.meta.env.VITE_API_URL;
+
 
   useEffect(() => {
     const fetchSeeds = async () => {
       try {
         setLoading(true);
-        const response = await fetch('http://localhost:5000/api/products');
+        const response = await fetch(`${API_URL}/api/products`);
         if (!response.ok) throw new Error(`Server Error: ${response.status}`);
         const data = await response.json();
 
