@@ -76,7 +76,9 @@ const allowedOrigins = [
   "http://www.mamtanursery.com",
   "http://www.mamtanursery.com:5174",
   "https://mamtanursery.com",
-  "https://www.mamtanursery.com"
+  "https://www.mamtanursery.com",
+  "http://93.127.172.136:5174",
+
 ];
 
 app.use(cors({
