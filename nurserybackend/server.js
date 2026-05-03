@@ -87,11 +87,7 @@ app.use(cors({
 
     if (!origin) return callback(null, true);
 
-    // 🔴 OLD (remove this)
-    // const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
-
-    // 🟢 NEW (ADD THIS)
-   const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
+    const isAllowed = allowedOrigins.some(o => origin.startsWith(o));
 
     if (isAllowed) {
       callback(null, true);
@@ -102,7 +98,6 @@ app.use(cors({
   },
   credentials: true
 }));
-
 /* ================= ROUTES ================= */
 
 app.use('/api/products', productRoutes);
