@@ -78,12 +78,14 @@ const app = express();
 
 // ================= CORS =================
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://93.127.172.136:5174",
-    "http://93.127.172.136"
-  ],
+origin: [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://93.127.172.136:5174",
+  "http://93.127.172.136",
+  "http://mamtanursery.com",
+  "http://www.mamtanursery.com"
+],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
