@@ -85,7 +85,7 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
   const deletePlant = async (id) => {
     if(!window.confirm("Bhai, kya aap sure ho?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      await axios.delete(`${API}/api/products/${id}`);
       fetchItems();
     } catch (err) { alert("Delete error!"); }
   };
@@ -108,11 +108,12 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
       description: newPlant.description.trim()
     };
     
+    const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/products/${editingId}`, payload);
+        await axios.put(`${API}/api/products/${editingId}`, payload);
       } else {
-        await axios.post("http://localhost:5000/api/products", payload);
+        await axios.post(`${API}/api/products`, payload);
       }
       setIsModalOpen(false);
       setEditingId(null);

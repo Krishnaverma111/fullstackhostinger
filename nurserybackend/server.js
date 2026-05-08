@@ -66,6 +66,7 @@ const cors = require('cors');
 const connectDB = require('./config/db');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const loginRoutes = require("./routes/Adminroutes")
 
 // ================= LOAD ENV =================
 dotenv.config();
@@ -94,6 +95,8 @@ app.use(express.json());
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/seeds', productRoutes);
+app.use("/api/admin",loginRoutes );
+
 
 // ================= ROOT =================
 app.get('/', (req, res) => {
