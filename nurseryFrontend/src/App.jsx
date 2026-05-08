@@ -681,7 +681,7 @@ import Location from "./pages/Location";
 
 const Pots = Planter;
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API = import.meta.env.VITE_API_URL ;
 
 // ✅ Helper to check auth from localStorage directly
 const isAdminLoggedIn = () => localStorage.getItem("isAdminLoggedIn") === "true";

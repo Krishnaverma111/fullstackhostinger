@@ -250,6 +250,7 @@
 
 //   const API = "http://localhost:5000";
 
+
 //   // 🔥 FETCH DATA
 //   const fetchProducts = async () => {
 //     try {
@@ -403,7 +404,7 @@ const Gifting = ({ addToCart }) => {
   const [showTopBtn, setShowTopBtn] = useState(false);
   const [sortBy, setSortBy] = useState("Featured");
 
- const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+ const API = import.meta.env.VITE_API_URL ;
   // 🔥 FETCH DATA
   useEffect(() => {
     const fetchData = async () => {

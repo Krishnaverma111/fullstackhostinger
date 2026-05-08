@@ -42,7 +42,7 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
     };
   }, []);
 
-  const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  const API = import.meta.env.VITE_API_URL ;
 
   const isMobile = windowWidth <= 768;
 
@@ -108,7 +108,7 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
       description: newPlant.description.trim()
     };
     
-    const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
+    const API = import.meta.env.VITE_API_URL ;
     try {
       if (editingId) {
         await axios.put(`${API}/api/products/${editingId}`, payload);
