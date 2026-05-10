@@ -157,17 +157,20 @@ const allowedOrigins = [
   "https://www.mamtanursery.com",
 ];
 
-// ================= CORS =================
+// ================= CORS OPTIONS =================
 const corsOptions = {
   origin: function (origin, callback) {
 
     // Allow requests without origin
     // Postman / mobile apps
-    if (!origin) return callback(null, true);
+    if (!origin) {
+      return callback(null, true);
+    }
 
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+
       console.log("❌ Blocked by CORS:", origin);
 
       callback(new Error("Not allowed by CORS"));
@@ -179,15 +182,18 @@ const corsOptions = {
   credentials: true,
 };
 
+// ================= CORS =================
 app.use(cors(corsOptions));
-
-// ================= PREFLIGHT =================
-app.options("*", cors(corsOptions));
 
 // ================= BODY PARSER =================
 app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
+
+// ================= ROOT ROUTE =================
+app.get("/", (req, res) => {
+  res.send("🌱 Nursery API is running...");
+});
 
 // ================= ROUTES =================
 app.use("/api/products", productRoutes);
@@ -197,11 +203,6 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/seeds", productRoutes);
 
 app.use("/api/admin", loginRoutes);
-
-// ================= ROOT =================
-app.get("/", (req, res) => {
-  res.send("🌱 Nursery API is running...");
-});
 
 // ================= ERROR HANDLER =================
 app.use((err, req, res, next) => {
