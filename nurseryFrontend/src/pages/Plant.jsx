@@ -1,13 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 
-/**
- * ARCHITECTURAL BOTANICAL ENGINE v4.0 - FULL SYSTEM
- * Feature: Integrated State-Based Routing (Home <-> Store)
- * Aesthetic: Micro-typography, Luxury Layout, 0% Data Loss
- */
-
-// --- 1. DESIGN SYSTEM: HIGH-FIDELITY SVG ICONS ---
 const Icons = {
   Minus: () => (
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">

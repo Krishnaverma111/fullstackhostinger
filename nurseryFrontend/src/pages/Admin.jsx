@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
-import { 
-  LayoutDashboard, ShoppingBag, Users, TrendingUp, Settings, 
+import {
+  LayoutDashboard, ShoppingBag, Users, TrendingUp, Settings,
   Plus, Search, Trash2, Edit3, X, Leaf, Package, Activity,
   ArrowUpRight, Database, Globe, Bell, Filter, Download, Clock, Phone, MapPin, Menu,
   ChevronRight, MoreVertical, Zap
@@ -17,7 +17,7 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [scrolled, setScrolled] = useState(false);
-  
+
   const [orders, setOrders] = useState([]);
 
   const [newPlant, setNewPlant] = useState({
@@ -26,8 +26,8 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
   });
 
   const categories = [
-    "Plants", "Gardening", "Seeds", "Bulbs", "Planters", 
-    "Soil & Fertilizer", "Pebbles", "Accessories", "Gifts", 
+    "Plants", "Gardening", "Seeds", "Bulbs", "Planters",
+    "Soil & Fertilizer", "Pebbles", "Accessories", "Gifts",
     "Indoor", "Outdoor", "Offers"
   ];
 
@@ -42,20 +42,32 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
     };
   }, []);
 
-  const API = import.meta.env.VITE_API_URL ;
+  const API = import.meta.env.VITE_API_URL;
 
   const isMobile = windowWidth <= 768;
 
   const fetchItems = async () => {
     try {
       const res = await axios.get(`${API}/api/products`);
-      if(setInventory) setInventory(res.data);
+      if (setInventory) setInventory(res.data);
     } catch (err) { console.error("Database connection failed", err); }
   };
 
-  const fetchOrders = () => {
-    const savedOrders = JSON.parse(localStorage.getItem("nurseryOrders") || "[]");
-    setOrders(savedOrders);
+  // const fetchOrders = () => {
+  //   const savedOrders = JSON.parse(localStorage.getItem("nurseryOrders") || "[]");
+  //   setOrders(savedOrders);
+  // };
+
+  const fetchOrders = async () => {
+    try {
+      const res = await axios.get(`${API}/api/orders/all-orders`);
+
+      if (res.data.success) {
+        setOrders(res.data.orders);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
@@ -83,7 +95,7 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
   }), [inventory, orders]);
 
   const deletePlant = async (id) => {
-    if(!window.confirm("Bhai, kya aap sure ho?")) return;
+    if (!window.confirm("Bhai, kya aap sure ho?")) return;
     try {
       await axios.delete(`${API}/api/products/${id}`);
       fetchItems();
@@ -91,7 +103,7 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
   };
 
   const deleteOrder = (index) => {
-    if(!window.confirm("Order clear kar dein?")) return;
+    if (!window.confirm("Order clear kar dein?")) return;
     const updatedOrders = orders.filter((_, i) => i !== index);
     localStorage.setItem("nurseryOrders", JSON.stringify(updatedOrders));
     setOrders(updatedOrders);
@@ -99,16 +111,16 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const payload = { 
+    const payload = {
       name: newPlant.name.trim(),
-      price: Number(newPlant.price), 
+      price: Number(newPlant.price),
       countInStock: Number(newPlant.stock),
       category: newPlant.category,
       image: newPlant.image.trim(),
       description: newPlant.description.trim()
     };
-    
-    const API = import.meta.env.VITE_API_URL ;
+
+    const API = import.meta.env.VITE_API_URL;
     try {
       if (editingId) {
         await axios.put(`${API}/api/products/${editingId}`, payload);
@@ -141,11 +153,11 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
     <div style={styles.container}>
       {/* Mobile Header - Enhanced with Glassmorphism */}
       {isMobile && (
-        <div style={{...styles.mobileHeader, backgroundColor: scrolled ? 'rgba(15, 23, 42, 0.9)' : '#0f172a', backdropFilter: 'blur(10px)'}}>
+        <div style={{ ...styles.mobileHeader, backgroundColor: scrolled ? 'rgba(15, 23, 42, 0.9)' : '#0f172a', backdropFilter: 'blur(10px)' }}>
           <button onClick={() => setIsSidebarOpen(true)} style={styles.menuBtn}><Menu size={24} /></button>
-          <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Leaf size={20} color="#10b981" />
-            <h2 style={{...styles.logoText, fontSize: '18px', letterSpacing: '-1px'}}>Nursery<span style={{color: '#10b981'}}>OS</span></h2>
+            <h2 style={{ ...styles.logoText, fontSize: '18px', letterSpacing: '-1px' }}>Nursery<span style={{ color: '#10b981' }}>OS</span></h2>
           </div>
           <div style={styles.mobileProfileCircle}></div>
         </div>
@@ -163,18 +175,18 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
             <X size={20} />
           </button>
         )}
-        
+
         <div style={styles.logoArea}>
           <div style={styles.logoIcon}>
             <Leaf size={24} color="#10b981" fill="#10b981" />
             <div style={styles.logoGlow}></div>
           </div>
           <div>
-             <h2 style={styles.logoText}>NURSERY<span style={{color: '#10b981'}}>OS</span></h2>
-             <div style={{display: 'flex', alignItems: 'center', gap: '5px'}}>
-                <div style={styles.onlineStatus}></div>
-                <p style={styles.logoSubText}>V3.5.0 STABLE</p>
-             </div>
+            <h2 style={styles.logoText}>NURSERY<span style={{ color: '#10b981' }}>OS</span></h2>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <div style={styles.onlineStatus}></div>
+              <p style={styles.logoSubText}>V3.5.0 STABLE</p>
+            </div>
           </div>
         </div>
 
@@ -186,9 +198,9 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
             { id: "Analytics", icon: TrendingUp },
             { id: "Settings", icon: Settings }
           ].map((item) => (
-            <button 
+            <button
               key={item.id}
-              onClick={() => { setActiveTab(item.id); if(isMobile) setIsSidebarOpen(false); }}
+              onClick={() => { setActiveTab(item.id); if (isMobile) setIsSidebarOpen(false); }}
               style={{
                 ...styles.navItem,
                 background: activeTab === item.id ? 'linear-gradient(90deg, rgba(16, 185, 129, 0.15) 0%, transparent 100%)' : 'transparent',
@@ -197,7 +209,7 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
               }}
             >
               <item.icon size={20} strokeWidth={activeTab === item.id ? 2.5 : 2} />
-              <span style={{fontWeight: activeTab === item.id ? '800' : '600'}}>{item.id}</span>
+              <span style={{ fontWeight: activeTab === item.id ? '800' : '600' }}>{item.id}</span>
               {item.id === "Orders" && orders.length > 0 && (
                 <div style={styles.orderBadge}>{orders.length}</div>
               )}
@@ -206,33 +218,33 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
         </nav>
 
         <div style={styles.sidebarFooter}>
-            <div style={styles.systemHealth}>
-                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '8px'}}>
-                    <span style={{fontSize: '10px', fontWeight: '800', color: '#64748b'}}>DB STATUS</span>
-                    <span style={{fontSize: '10px', fontWeight: '800', color: '#10b981'}}>ACTIVE</span>
-                </div>
-                <div style={styles.healthBar}><div style={{...styles.healthFill, width: '92%'}}></div></div>
+          <div style={styles.systemHealth}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <span style={{ fontSize: '10px', fontWeight: '800', color: '#64748b' }}>DB STATUS</span>
+              <span style={{ fontSize: '10px', fontWeight: '800', color: '#10b981' }}>ACTIVE</span>
             </div>
+            <div style={styles.healthBar}><div style={{ ...styles.healthFill, width: '92%' }}></div></div>
+          </div>
         </div>
       </aside>
 
       {/* Main Content - Improved Layout */}
-      <main style={{...styles.main, padding: isMobile ? '100px 20px 100px 20px' : '40px 60px'}}>
-        <header style={{...styles.header, flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'stretch' : 'center'}}>
-          <div style={{display: 'flex', flexDirection: 'column'}}>
-            <h1 style={{...styles.mainTitle, fontSize: isMobile ? '32px' : '48px'}}>
-                {activeTab} <span style={{color: '#10b981', fontStyle: 'normal'}}>•</span>
+      <main style={{ ...styles.main, padding: isMobile ? '100px 20px 100px 20px' : '40px 60px' }}>
+        <header style={{ ...styles.header, flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'stretch' : 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <h1 style={{ ...styles.mainTitle, fontSize: isMobile ? '32px' : '48px' }}>
+              {activeTab} <span style={{ color: '#10b981', fontStyle: 'normal' }}>•</span>
             </h1>
-            <p style={{color: '#64748b', fontSize: '14px', fontWeight: '600', marginTop: '-5px'}}>
-                Welcome back, Admin. System is running smoothly.
+            <p style={{ color: '#64748b', fontSize: '14px', fontWeight: '600', marginTop: '-5px' }}>
+              Welcome back, Admin. System is running smoothly.
             </p>
           </div>
-          
-          <div style={{...styles.headerActions, marginTop: isMobile ? '20px' : '0'}}>
-            <div style={{...styles.searchBox, flex: 1}}>
+
+          <div style={{ ...styles.headerActions, marginTop: isMobile ? '20px' : '0' }}>
+            <div style={{ ...styles.searchBox, flex: 1 }}>
               <Search size={18} color="#10b981" />
-              <input 
-                placeholder="Search resources..." 
+              <input
+                placeholder="Search resources..."
                 style={styles.searchInput}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -247,59 +259,59 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
         </header>
 
         {activeTab === "Dashboard" && (
-          <div style={{display: 'flex', flexDirection: 'column', gap: '30px'}}>
-            <div style={{...styles.grid, gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)'}}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+            <div style={{ ...styles.grid, gridTemplateColumns: isMobile ? '1fr' : 'repeat(4, 1fr)' }}>
               <div style={styles.statCard}>
-                <div style={{...styles.iconBox, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981'}}><TrendingUp size={20}/></div>
+                <div style={{ ...styles.iconBox, background: 'rgba(16, 185, 129, 0.1)', color: '#10b981' }}><TrendingUp size={20} /></div>
                 <p style={styles.statLabel}>Revenue</p>
                 <h3 style={styles.statValue}>₹{stats.totalValue.toLocaleString()}</h3>
-                <div style={styles.miniTrend}><ArrowUpRight size={12}/> +12%</div>
+                <div style={styles.miniTrend}><ArrowUpRight size={12} /> +12%</div>
               </div>
-              <div style={{...styles.statCard, border: orders.length > 0 ? '1px solid #10b981' : '1px solid transparent'}} onClick={() => setActiveTab("Orders")}>
-                <div style={{...styles.iconBox, background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6'}}><Bell size={20}/></div>
+              <div style={{ ...styles.statCard, border: orders.length > 0 ? '1px solid #10b981' : '1px solid transparent' }} onClick={() => setActiveTab("Orders")}>
+                <div style={{ ...styles.iconBox, background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6' }}><Bell size={20} /></div>
                 <p style={styles.statLabel}>Orders</p>
                 <h3 style={styles.statValue}>{stats.pendingOrders}</h3>
-                <div style={{...styles.miniTrend, color: '#3b82f6'}}>Live</div>
+                <div style={{ ...styles.miniTrend, color: '#3b82f6' }}>Live</div>
               </div>
               <div style={styles.statCard}>
-                <div style={{...styles.iconBox, background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b'}}><Package size={20}/></div>
+                <div style={{ ...styles.iconBox, background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b' }}><Package size={20} /></div>
                 <p style={styles.statLabel}>Items</p>
                 <h3 style={styles.statValue}>{stats.totalItems}</h3>
-                <div style={{...styles.miniTrend, color: '#f59e0b'}}>In Stock</div>
+                <div style={{ ...styles.miniTrend, color: '#f59e0b' }}>In Stock</div>
               </div>
               <div style={styles.statCard}>
-                <div style={{...styles.iconBox, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444'}}><Activity size={20}/></div>
+                <div style={{ ...styles.iconBox, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444' }}><Activity size={20} /></div>
                 <p style={styles.statLabel}>Low Stock</p>
                 <h3 style={styles.statValue}>{stats.lowStock}</h3>
-                <div style={{...styles.miniTrend, color: '#ef4444'}}>Alert</div>
+                <div style={{ ...styles.miniTrend, color: '#ef4444' }}>Alert</div>
               </div>
             </div>
 
             <div style={styles.chartWrapper}>
-                <div style={styles.chartHeader}>
-                    <h4 style={{margin: 0, fontWeight: '800'}}>STOCK INVENTORY ANALYSIS</h4>
-                    <div style={styles.chartLegend}>
-                        <div style={styles.legendItem}><div style={{...styles.legendDot, background: '#10b981'}}></div>Stock</div>
-                        <div style={styles.legendItem}><div style={{...styles.legendDot, background: '#3b82f6'}}></div>Value</div>
-                    </div>
+              <div style={styles.chartHeader}>
+                <h4 style={{ margin: 0, fontWeight: '800' }}>STOCK INVENTORY ANALYSIS</h4>
+                <div style={styles.chartLegend}>
+                  <div style={styles.legendItem}><div style={{ ...styles.legendDot, background: '#10b981' }}></div>Stock</div>
+                  <div style={styles.legendItem}><div style={{ ...styles.legendDot, background: '#3b82f6' }}></div>Value</div>
                 </div>
-                <div style={{height: isMobile ? '250px' : '380px', width: '100%'}}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={chartData}>
-                      <defs>
-                        <linearGradient id="colorStock" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 'bold'}} hide={isMobile} />
-                      <YAxis hide />
-                      <Tooltip contentStyle={{borderRadius: '15px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)'}} />
-                      <Area type="monotone" dataKey="stock" stroke="#10b981" strokeWidth={4} fillOpacity={1} fill="url(#colorStock)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </div>
+              </div>
+              <div style={{ height: isMobile ? '250px' : '380px', width: '100%' }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData}>
+                    <defs>
+                      <linearGradient id="colorStock" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 'bold' }} hide={isMobile} />
+                    <YAxis hide />
+                    <Tooltip contentStyle={{ borderRadius: '15px', border: 'none', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }} />
+                    <Area type="monotone" dataKey="stock" stroke="#10b981" strokeWidth={4} fillOpacity={1} fill="url(#colorStock)" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </div>
         )}
@@ -307,61 +319,61 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
         {activeTab === "Inventory" && (
           <div style={styles.tableCard}>
             <div style={styles.tableToolbar}>
-                <div style={styles.categoryScroll}>
-                   {["All", ...categories].map(cat => (
-                     <button key={cat} onClick={() => setFilterCategory(cat)} style={{
-                            ...styles.filterTab,
-                            backgroundColor: filterCategory === cat ? '#10b981' : 'transparent',
-                            color: filterCategory === cat ? '#fff' : '#64748b',
-                            border: filterCategory === cat ? '1px solid #10b981' : '1px solid #e2e8f0',
-                        }}>
-                       {cat}
-                     </button>
-                   ))}
-                </div>
+              <div style={styles.categoryScroll}>
+                {["All", ...categories].map(cat => (
+                  <button key={cat} onClick={() => setFilterCategory(cat)} style={{
+                    ...styles.filterTab,
+                    backgroundColor: filterCategory === cat ? '#10b981' : 'transparent',
+                    color: filterCategory === cat ? '#fff' : '#64748b',
+                    border: filterCategory === cat ? '1px solid #10b981' : '1px solid #e2e8f0',
+                  }}>
+                    {cat}
+                  </button>
+                ))}
+              </div>
             </div>
-            
-            <div style={{overflowX: 'auto'}}>
-                <table style={{...styles.table, minWidth: '800px'}}>
-                  <thead>
-                    <tr style={styles.tableHeadRow}>
-                      <th style={styles.th}>PRODUCT INFO</th>
-                      <th style={styles.th}>CATEGORY</th>
-                      <th style={styles.th}>PRICE</th>
-                      <th style={styles.th}>STOCK LEVEL</th>
-                      <th style={{...styles.th, textAlign: 'right'}}>ACTIONS</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredData.map((item) => (
-                      <tr key={item._id} className="table-row">
-                        <td style={styles.td}>
-                          <div style={{display: 'flex', alignItems: 'center', gap: '15px'}}>
-                            <div style={styles.imgWrapper}>
-                                <img src={item.image} style={styles.itemThumb} alt="" />
-                            </div>
-                            <div>
-                              <p style={styles.itemName}>{item.name}</p>
-                              <p style={styles.itemDesc}>ID: {item._id?.substring(0, 6)}</p>
-                            </div>
+
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ ...styles.table, minWidth: '800px' }}>
+                <thead>
+                  <tr style={styles.tableHeadRow}>
+                    <th style={styles.th}>PRODUCT INFO</th>
+                    <th style={styles.th}>CATEGORY</th>
+                    <th style={styles.th}>PRICE</th>
+                    <th style={styles.th}>STOCK LEVEL</th>
+                    <th style={{ ...styles.th, textAlign: 'right' }}>ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredData.map((item) => (
+                    <tr key={item._id} className="table-row">
+                      <td style={styles.td}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                          <div style={styles.imgWrapper}>
+                            <img src={item.image} style={styles.itemThumb} alt="" />
                           </div>
-                        </td>
-                        <td style={styles.td}><span style={styles.catTag}>{item.category}</span></td>
-                        <td style={{...styles.td, fontWeight: '800'}}>₹{item.price}</td>
-                        <td style={styles.td}>
-                            <div style={styles.stockCell}>
-                                <div style={{...styles.stockIndicator, background: item.countInStock < 5 ? '#ef4444' : '#10b981'}}></div>
-                                <span style={{fontWeight: '700'}}>{item.countInStock} Units</span>
-                            </div>
-                        </td>
-                        <td style={{...styles.td, textAlign: 'right'}}>
-                          <button onClick={() => handleEdit(item)} style={styles.actionBtn}><Edit3 size={18} /></button>
-                          <button onClick={() => deletePlant(item._id)} style={{...styles.actionBtn, color: '#ef4444'}}><Trash2 size={18} /></button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                          <div>
+                            <p style={styles.itemName}>{item.name}</p>
+                            <p style={styles.itemDesc}>ID: {item._id?.substring(0, 6)}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td style={styles.td}><span style={styles.catTag}>{item.category}</span></td>
+                      <td style={{ ...styles.td, fontWeight: '800' }}>₹{item.price}</td>
+                      <td style={styles.td}>
+                        <div style={styles.stockCell}>
+                          <div style={{ ...styles.stockIndicator, background: item.countInStock < 5 ? '#ef4444' : '#10b981' }}></div>
+                          <span style={{ fontWeight: '700' }}>{item.countInStock} Units</span>
+                        </div>
+                      </td>
+                      <td style={{ ...styles.td, textAlign: 'right' }}>
+                        <button onClick={() => handleEdit(item)} style={styles.actionBtn}><Edit3 size={18} /></button>
+                        <button onClick={() => deletePlant(item._id)} style={{ ...styles.actionBtn, color: '#ef4444' }}><Trash2 size={18} /></button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
@@ -371,37 +383,219 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
             {orders.map((order, idx) => (
               <div key={idx} style={styles.orderCard}>
                 <div style={styles.orderCardHeader}>
-                  <div style={styles.orderType}><Zap size={12} fill="#f59e0b"/> PRIORITY</div>
-                  <button onClick={() => deleteOrder(idx)} style={styles.orderDelete}><X size={14}/></button>
+                  <div style={styles.orderType}><Zap size={12} fill="#f59e0b" /> PRIORITY</div>
+                  <button onClick={() => deleteOrder(idx)} style={styles.orderDelete}><X size={14} /></button>
                 </div>
                 <h3 style={styles.orderCustomer}>{order.customerName || "Walk-in Customer"}</h3>
-                <div style={styles.orderPhone}><Phone size={14}/> {order.phone}</div>
-                
-                <div style={styles.orderItemList}>
-                   {order.items?.map((it, i) => (
-                    <div key={i} style={styles.orderItem}>
-                        <span>{it.name} <small>x{it.qty}</small></span>
-                        <span>₹{it.price * it.qty}</span>
+                <div style={styles.orderPhone}><Phone size={14} /> {order.phone}</div>
+
+                <div
+                  style={{
+                    background: "#fff",
+                    borderRadius: "20px",
+                    border: "1px solid #e5e7eb",
+                    padding: "18px",
+                    marginTop: "15px",
+                    boxShadow: "0 10px 25px rgba(0,0,0,0.06)"
+                  }}
+                >
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "15px",
+                      borderBottom: "2px solid #f1f5f9",
+                      paddingBottom: "12px"
+                    }}
+                  >
+                    <h3
+                      style={{
+                        margin: 0,
+                        color: "#111827",
+                        fontWeight: "800"
+                      }}
+                    >
+                      👤 Customer Details
+                    </h3>
+
+                    <span
+                      style={{
+                        background:
+                          order.status === "Pending"
+                            ? "#FEF3C7"
+                            : "#DCFCE7",
+                        color:
+                          order.status === "Pending"
+                            ? "#D97706"
+                            : "#16A34A",
+                        padding: "6px 14px",
+                        borderRadius: "30px",
+                        fontSize: "12px",
+                        fontWeight: "700"
+                      }}
+                    >
+                      {order.status}
+                    </span>
+                  </div>
+
+                  <div style={{ display: "grid", rowGap: "10px" }}>
+
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <strong>👤 Name</strong>
+                      <span>{order.customerName}</span>
                     </div>
-                   ))}
+
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <strong>📞 Phone</strong>
+                      <span>{order.phone}</span>
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <strong>📧 Email</strong>
+                      <span>{order.email}</span>
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+                      <strong>📍 Address</strong>
+                      <span
+                        style={{
+                          width: "180px",
+                          textAlign: "right",
+                          color: "#4B5563"
+                        }}
+                      >
+                        {order.address}
+                      </span>
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <strong>🏙 City</strong>
+                      <span>{order.city}</span>
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <strong>📮 Pincode</strong>
+                      <span>{order.pincode}</span>
+                    </div>
+
+                    <div style={{ display: "flex", justifyContent: "space-between" }}>
+                      <strong>🕒 Order Time</strong>
+                      <span>
+                        {new Date(order.createdAt).toLocaleString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          hour12: true
+                        })}
+                      </span>
+                    </div>
+
+                  </div>
+
+                  <div
+                    style={{
+                      marginTop: "20px",
+                      borderTop: "2px solid #f1f5f9",
+                      paddingTop: "15px"
+                    }}
+                  >
+                    <h3
+                      style={{
+                        marginBottom: "15px",
+                        color: "#111827",
+                        fontWeight: "800"
+                      }}
+                    >
+                      🛒 Ordered Products
+                    </h3>
+
+                    {order.items?.map((it, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          background: "#F9FAFB",
+                          padding: "12px 15px",
+                          borderRadius: "12px",
+                          marginBottom: "10px",
+                          border: "1px solid #E5E7EB"
+                        }}
+                      >
+
+                        <div>
+                          <div
+                            style={{
+                              fontWeight: "700",
+                              color: "#111827",
+                              marginBottom: "4px"
+                            }}
+                          >
+                            {it.productName}
+                          </div>
+
+                          <div
+                            style={{
+                              fontSize: "13px",
+                              color: "#6B7280"
+                            }}
+                          >
+                            Qty : {it.quantity}
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            textAlign: "right"
+                          }}
+                        >
+                          <div
+                            style={{
+                              fontSize: "18px",
+                              fontWeight: "800",
+                              color: "#16A34A"
+                            }}
+                          >
+                            ₹{it.price * it.quantity}
+                          </div>
+
+                          <div
+                            style={{
+                              fontSize: "12px",
+                              color: "#6B7280"
+                            }}
+                          >
+                            ₹{it.price} × {it.quantity}
+                          </div>
+                        </div>
+
+                      </div>
+                    ))}
+                  </div>
+
                 </div>
-                
+
                 <div style={styles.orderFooter}>
-                    <div style={styles.orderTotal}>
-                        <span>Payable</span>
-                        <h4 style={{margin:0, color: '#10b981'}}>₹{order.totalAmount}</h4>
-                    </div>
-                    <button onClick={() => window.open(`https://wa.me/91${order.phone}`, '_blank')} style={styles.whatsappBtn}>
-                        WHATSAPP
-                    </button>
+                  <div style={styles.orderTotal}>
+                    <span>Payable</span>
+                    <h4 style={{ margin: 0, color: '#10b981' }}>₹{order.totalAmount}</h4>
+                  </div>
+                  <button onClick={() => window.open(`https://wa.me/91${order.phone}`, '_blank')} style={styles.whatsappBtn}>
+                    WHATSAPP
+                  </button>
                 </div>
               </div>
             ))}
             {orders.length === 0 && (
-                <div style={styles.emptyState}>
-                    <Bell size={40} color="#cbd5e1" />
-                    <p>No active orders in the queue.</p>
-                </div>
+              <div style={styles.emptyState}>
+                <Bell size={40} color="#cbd5e1" />
+                <p>No active orders in the queue.</p>
+              </div>
             )}
           </div>
         )}
@@ -410,47 +604,47 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
       {/* Floating Action Button for Mobile */}
       {isMobile && (
         <button onClick={() => { setIsModalOpen(true); setEditingId(null); }} style={styles.fab}>
-            <Plus size={28} color="#fff" />
+          <Plus size={28} color="#fff" />
         </button>
       )}
 
       {/* Glassmorphism Modal */}
       {isModalOpen && (
         <div style={styles.modalOverlay}>
-          <div style={{...styles.modalContent, width: isMobile ? '95%' : '500px'}}>
-             <div style={styles.modalHeader}>
-                <h2 style={{margin: 0, fontSize: '24px', fontWeight: '900'}}>
-                    {editingId ? 'EDIT' : 'NEW'} <span style={{color: '#10b981'}}>ASSET</span>
-                </h2>
-                <button onClick={() => setIsModalOpen(false)} style={styles.closeModal}><X size={20} /></button>
-             </div>
-             <form onSubmit={handleSubmit} style={styles.form}>
-                <div style={styles.inputWrap}>
-                    <label style={styles.inputLabel}>Asset Name</label>
-                    <input required style={styles.inputField} value={newPlant.name} onChange={(e) => setNewPlant({...newPlant, name: e.target.value})} />
+          <div style={{ ...styles.modalContent, width: isMobile ? '95%' : '500px' }}>
+            <div style={styles.modalHeader}>
+              <h2 style={{ margin: 0, fontSize: '24px', fontWeight: '900' }}>
+                {editingId ? 'EDIT' : 'NEW'} <span style={{ color: '#10b981' }}>ASSET</span>
+              </h2>
+              <button onClick={() => setIsModalOpen(false)} style={styles.closeModal}><X size={20} /></button>
+            </div>
+            <form onSubmit={handleSubmit} style={styles.form}>
+              <div style={styles.inputWrap}>
+                <label style={styles.inputLabel}>Asset Name</label>
+                <input required style={styles.inputField} value={newPlant.name} onChange={(e) => setNewPlant({ ...newPlant, name: e.target.value })} />
+              </div>
+              <div style={{ display: 'flex', gap: '15px' }}>
+                <div style={{ ...styles.inputWrap, flex: 1 }}>
+                  <label style={styles.inputLabel}>Price (₹)</label>
+                  <input required type="number" style={styles.inputField} value={newPlant.price} onChange={(e) => setNewPlant({ ...newPlant, price: e.target.value })} />
                 </div>
-                <div style={{display: 'flex', gap: '15px'}}>
-                    <div style={{...styles.inputWrap, flex: 1}}>
-                        <label style={styles.inputLabel}>Price (₹)</label>
-                        <input required type="number" style={styles.inputField} value={newPlant.price} onChange={(e) => setNewPlant({...newPlant, price: e.target.value})} />
-                    </div>
-                    <div style={{...styles.inputWrap, flex: 1}}>
-                        <label style={styles.inputLabel}>Stock</label>
-                        <input required type="number" style={styles.inputField} value={newPlant.stock} onChange={(e) => setNewPlant({...newPlant, stock: e.target.value})} />
-                    </div>
+                <div style={{ ...styles.inputWrap, flex: 1 }}>
+                  <label style={styles.inputLabel}>Stock</label>
+                  <input required type="number" style={styles.inputField} value={newPlant.stock} onChange={(e) => setNewPlant({ ...newPlant, stock: e.target.value })} />
                 </div>
-                <div style={styles.inputWrap}>
-                    <label style={styles.inputLabel}>Category</label>
-                    <select style={styles.inputField} value={newPlant.category} onChange={(e) => setNewPlant({...newPlant, category: e.target.value})}>
-                        {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                    </select>
-                </div>
-                <div style={styles.inputWrap}>
-                    <label style={styles.inputLabel}>Media URL</label>
-                    <input required style={styles.inputField} value={newPlant.image} onChange={(e) => setNewPlant({...newPlant, image: e.target.value})} />
-                </div>
-                <button type="submit" style={styles.saveBtn}>DEPLOY CHANGES</button>
-             </form>
+              </div>
+              <div style={styles.inputWrap}>
+                <label style={styles.inputLabel}>Category</label>
+                <select style={styles.inputField} value={newPlant.category} onChange={(e) => setNewPlant({ ...newPlant, category: e.target.value })}>
+                  {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                </select>
+              </div>
+              <div style={styles.inputWrap}>
+                <label style={styles.inputLabel}>Media URL</label>
+                <input required style={styles.inputField} value={newPlant.image} onChange={(e) => setNewPlant({ ...newPlant, image: e.target.value })} />
+              </div>
+              <button type="submit" style={styles.saveBtn}>DEPLOY CHANGES</button>
+            </form>
           </div>
         </div>
       )}

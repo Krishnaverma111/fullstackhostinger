@@ -1,14 +1,92 @@
 const Product = require('../models/Product');
 
-// @desc    Fetch all products
+
+
+// exports.getProducts = async (req, res) => {
+
+//   try {
+
+//     const page = Number(req.query.page) || 1;
+
+//     const limit = Number(req.query.limit) || 4;
+
+//     const skip = (page - 1) * limit;
+
+//     // CATEGORY FROM QUERY
+//     const category = req.query.category;
+
+//     // FILTER OBJECT
+//     let filter = {};
+
+//     // APPLY CATEGORY FILTER
+//     if (category) {
+
+//       filter.category = {
+//         $regex: new RegExp(`^${category}$`, "i")
+//       };
+
+//     }
+
+//     // GET PRODUCTS
+//     const products = await Product.find(filter)
+//       .sort({ createdAt: -1 })
+//       .skip(skip)
+//       .limit(limit);
+
+//     res.status(200).json(products);
+
+//   } catch (error) {
+
+//     console.log(error);
+
+//     res.status(500).json({
+//       message: "Server Error"
+//     });
+
+//   }
+// };
+
 exports.getProducts = async (req, res) => {
   try {
-    const products = await Product.find({}).sort({ createdAt: -1 }); // Naya data upar dikhega
-    res.json(products);
+    const page = Number(req.query.page) || 1;
+    const limit = req.query.limit ? Number(req.query.limit) : null;
+
+    const filter = {};
+
+    if (req.query.category) {
+      filter.category = {
+        $regex: new RegExp(`^${req.query.category}$`, "i"),
+      };
+    }
+
+    const totalProducts = await Product.countDocuments(filter);
+
+    let query = Product.find(filter).sort({ createdAt: -1 });
+
+    if (limit) {
+      const skip = (page - 1) * limit;
+      query = query.skip(skip).limit(limit);
+    }
+
+    const products = await query;
+
+    res.status(200).json({
+      success: true,
+      totalProducts,
+      currentPage: page,
+      totalPages: limit ? Math.ceil(totalProducts / limit) : 1,
+      products,
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Server Error' });
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
+
 
 // @desc    Create a product
 exports.createProduct = async (req, res) => {
