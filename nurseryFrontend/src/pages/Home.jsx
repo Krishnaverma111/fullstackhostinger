@@ -74,7 +74,8 @@ const Home = ({ addToCart }) => {
       loadingRef.current = true;
       setLoading(true);
 
-      const url = `${API}/api/products?page=${pageNum}&limit=4&category=${category}`;
+      // const url = `${API}/api/products?page=${pageNum}&limit=4&category=${category}`;
+      const url = `${API}/api/products?page=${pageNum}&limit=3&category=${category}`;
       console.log("🔵 Fetching:", url);
 
       const res = await axios.get(url);
@@ -177,29 +178,26 @@ const Home = ({ addToCart }) => {
               <div className="absolute inset-0 bg-black/40" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
                 <div
-                  className={`mb-4 p-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 transform transition-all duration-1000 ${
-                    currentSlide === index
+                  className={`mb-4 p-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 transform transition-all duration-1000 ${currentSlide === index
                       ? "scale-100 opacity-100 rotate-0"
                       : "scale-50 opacity-0 rotate-12"
-                  }`}
+                    }`}
                 >
                   <div className="animate-bounce">{SLIDE_ICONS[index]}</div>
                 </div>
                 <h2
-                  className={`text-5xl md:text-8xl font-black uppercase italic tracking-tighter mb-4 drop-shadow-lg transform transition-all duration-700 delay-300 ${
-                    currentSlide === index
+                  className={`text-5xl md:text-8xl font-black uppercase italic tracking-tighter mb-4 drop-shadow-lg transform transition-all duration-700 delay-300 ${currentSlide === index
                       ? "translate-y-0 opacity-100"
                       : "translate-y-10 opacity-0"
-                  }`}
+                    }`}
                 >
                   {slide.title}
                 </h2>
                 <p
-                  className={`text-sm md:text-xl font-bold uppercase tracking-[0.3em] text-green-400 mb-8 transform transition-all duration-700 delay-500 ${
-                    currentSlide === index
+                  className={`text-sm md:text-xl font-bold uppercase tracking-[0.3em] text-green-400 mb-8 transform transition-all duration-700 delay-500 ${currentSlide === index
                       ? "translate-y-0 opacity-100"
                       : "translate-y-10 opacity-0"
-                  }`}
+                    }`}
                 >
                   {slide.sub}
                 </p>
