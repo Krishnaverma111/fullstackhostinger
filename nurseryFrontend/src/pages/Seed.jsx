@@ -69,7 +69,8 @@ const PlantStore = ({ addToCart }) => {
       setIsLoading(true);
       try {
         const categoryParam = activeTab === "All" ? "" : `&category=${activeTab}`;
-        const res = await fetch(`${API}/api/products?page=1&limit=12${categoryParam}`);
+        // const res = await fetch(`${API}/api/products?page=1&limit=12${categoryParam}`);
+        const res = await fetch(`${API}/api/products`);
         const data = await res.json();
         // Handle all common response shapes
         const items = data.products || data.data || data;
@@ -84,22 +85,29 @@ const PlantStore = ({ addToCart }) => {
     fetchProducts();
   }, [activeTab]);
 
+
   // Scroll to top on view change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [view]);
 
   const products = useMemo(() => {
-    if (!fetchedInventory || fetchedInventory.length === 0) return [];
-    return fetchedInventory.map((item, index) => ({
-      id: item._id || item.id || `p-${index}`,
-      name: item.name || "Specimen No. " + (index + 1),
-      img: item.image || item.img || 'https://images.unsplash.com/photo-1545241047-6083a3684587?auto=format&fit=crop&w=800&q=80',
-      type: item.category || "Indoor",
-      price: Number(item.price) || 499,
-      rating: item.rating || (4.5 + Math.random() * 0.4).toFixed(1),
-      description: item.description || "A meticulously curated specimen designed for architectural harmony.",
-    }));
+    if (!Array.isArray(fetchedInventory)) return [];
+
+    return fetchedInventory
+      .filter(
+        (item) => item.category?.toLowerCase() === "seeds"
+      )
+      .slice(0, 3)
+      .map((item, index) => ({
+        id: item._id || item.id || `p-${index}`,
+        name: item.name || `Specimen No. ${index + 1}`,
+        img: item.image || item.img,
+        type: item.category,
+        price: Number(item.price),
+        rating: item.rating || 4.8,
+        description: item.description,
+      }));
   }, [fetchedInventory]);
 
   const updateQty = useCallback((id, delta) => {
