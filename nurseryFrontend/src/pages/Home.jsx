@@ -69,25 +69,22 @@ const Home = ({ addToCart }) => {
 
   // ================= FETCH PRODUCTS =================
   const fetchProducts = useCallback(async (pageNum, category) => {
-    if (loadingRef.current) return; // ✅ double fetch rokta hai
+    if (loadingRef.current) return;
     try {
       loadingRef.current = true;
       setLoading(true);
 
-      // const url = `${API}/api/products?page=${pageNum}&limit=4&category=${category}`;
       const url = `${API}/api/products?page=${pageNum}&limit=3&category=${category}`;
-      console.log("🔵 Fetching:", url);
-
       const res = await axios.get(url);
-      console.log("🟢 Response:", res.data);
+
+      // ✅ Agar user isi beech category badal chuka hai, response ignore karo
+      if (category !== currentCategoryRef.current) return;
 
       let newProducts = [];
       if (Array.isArray(res.data)) {
         newProducts = res.data;
       } else if (res.data.success && res.data.products) {
         newProducts = res.data.products;
-      } else {
-        console.log("❌ Unknown response format");
       }
 
       setInventory((prev) => {
@@ -100,10 +97,8 @@ const Home = ({ addToCart }) => {
         });
       });
 
-      // ✅ totalPages se compare
       const totalPages = res.data.totalPages || 1;
       setHasMore(pageNum < totalPages);
-
     } catch (error) {
       console.error("🔴 Fetch Error:", error);
     } finally {
@@ -179,24 +174,24 @@ const Home = ({ addToCart }) => {
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-6">
                 <div
                   className={`mb-4 p-4 rounded-full bg-white/10 backdrop-blur-md border border-white/20 transform transition-all duration-1000 ${currentSlide === index
-                      ? "scale-100 opacity-100 rotate-0"
-                      : "scale-50 opacity-0 rotate-12"
+                    ? "scale-100 opacity-100 rotate-0"
+                    : "scale-50 opacity-0 rotate-12"
                     }`}
                 >
                   <div className="animate-bounce">{SLIDE_ICONS[index]}</div>
                 </div>
                 <h2
                   className={`text-5xl md:text-8xl font-black uppercase italic tracking-tighter mb-4 drop-shadow-lg transform transition-all duration-700 delay-300 ${currentSlide === index
-                      ? "translate-y-0 opacity-100"
-                      : "translate-y-10 opacity-0"
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-10 opacity-0"
                     }`}
                 >
                   {slide.title}
                 </h2>
                 <p
                   className={`text-sm md:text-xl font-bold uppercase tracking-[0.3em] text-green-400 mb-8 transform transition-all duration-700 delay-500 ${currentSlide === index
-                      ? "translate-y-0 opacity-100"
-                      : "translate-y-10 opacity-0"
+                    ? "translate-y-0 opacity-100"
+                    : "translate-y-10 opacity-0"
                     }`}
                 >
                   {slide.sub}
@@ -262,7 +257,7 @@ const Home = ({ addToCart }) => {
                     </span>
                   </div>
                   <button
-                    onClick={() => addToCart(item)}
+                    onClick={() => addToCart(item)} 
                     className="w-full bg-black text-white py-3 rounded-2xl flex items-center justify-center gap-2 hover:bg-green-600 transition"
                   >
                     <ShoppingBag size={16} />
