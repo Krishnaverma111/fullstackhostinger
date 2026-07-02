@@ -173,6 +173,7 @@ const PlantStore = ({ inventory = [], addToCart }) => {
       window.location.href = "/";
     }} 
     className="flex items-center gap-5 group transition-all"
+    
   >
     {/* Minimalist Return Icon */}
     <div className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center group-hover:bg-slate-900 group-hover:border-slate-900 group-hover:text-white transition-all duration-500 shadow-sm">

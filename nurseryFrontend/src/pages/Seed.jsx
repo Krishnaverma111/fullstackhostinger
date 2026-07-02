@@ -61,6 +61,7 @@ const PlantStore = ({ addToCart }) => {
   const [quantities, setQuantities] = useState({});
   const [activeTab, setActiveTab] = useState("All");
   const [fetchedInventory, setFetchedInventory] = useState([]);
+  const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // Fetch from backend whenever activeTab changes
   useEffect(() => {
@@ -68,7 +69,7 @@ const PlantStore = ({ addToCart }) => {
       setIsLoading(true);
       try {
         const categoryParam = activeTab === "All" ? "" : `&category=${activeTab}`;
-        const res = await fetch(`http://localhost:5000/api/products?page=1&limit=12${categoryParam}`);
+        const res = await fetch(`${API}/api/products?page=1&limit=12${categoryParam}`);
         const data = await res.json();
         // Handle all common response shapes
         const items = data.products || data.data || data;

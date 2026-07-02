@@ -53,10 +53,7 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
     } catch (err) { console.error("Database connection failed", err); }
   };
 
-  // const fetchOrders = () => {
-  //   const savedOrders = JSON.parse(localStorage.getItem("nurseryOrders") || "[]");
-  //   setOrders(savedOrders);
-  // };
+ 
 
   const fetchOrders = async () => {
     try {
