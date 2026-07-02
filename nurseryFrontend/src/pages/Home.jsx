@@ -74,7 +74,7 @@ const Home = ({ addToCart }) => {
       loadingRef.current = true;
       setLoading(true);
 
-     const url = `${API}/api/products?page=${pageNum}&limit=3&category=${category}`;
+     const url = `${API}/products?page=${pageNum}&limit=3&category=${category}`;
       const res = await axios.get(url);
 
       // ✅ Agar user isi beech category badal chuka hai, response ignore karo
