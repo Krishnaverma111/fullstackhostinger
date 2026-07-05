@@ -53,7 +53,7 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
     } catch (err) { console.error("Database connection failed", err); }
   };
 
- 
+
 
   const fetchOrders = async () => {
     try {
@@ -375,7 +375,7 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
           </div>
         )}
 
-        {activeTab === "Orders" && (
+        {/* {activeTab === "Orders" && (
           <div style={styles.ordersGrid}>
             {orders.map((order, idx) => (
               <div key={idx} style={styles.orderCard}>
@@ -493,6 +493,8 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
 
                   </div>
 
+                  
+
                   <div
                     style={{
                       marginTop: "20px",
@@ -595,7 +597,238 @@ const AdminDashboard = ({ inventory = [], setInventory }) => {
               </div>
             )}
           </div>
+        )} */}
+
+        {activeTab === "Orders" && (
+          <div style={styles.ordersGrid}>
+            {orders.map((order, idx) => (
+              <div
+                key={idx}
+                style={{
+                  background: "#fff",
+                  borderRadius: "24px",
+                  border: "1px solid #e5e7eb",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.06)",
+                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+              >
+                {/* ===== Header ===== */}
+                <div
+                  style={{
+                    background: "linear-gradient(135deg, #111827, #1f2937)",
+                    padding: "18px 20px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <Zap size={13} fill="#f59e0b" color="#f59e0b" />
+                    <span style={{ color: "#fff", fontSize: "11px", fontWeight: "800", letterSpacing: "1px" }}>
+                      PRIORITY ORDER
+                    </span>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <span
+                      style={{
+                        background: order.status === "Pending" ? "#FEF3C7" : "#DCFCE7",
+                        color: order.status === "Pending" ? "#D97706" : "#16A34A",
+                        padding: "5px 12px",
+                        borderRadius: "20px",
+                        fontSize: "11px",
+                        fontWeight: "800",
+                      }}
+                    >
+                      {order.status}
+                    </span>
+                    <button
+                      onClick={() => deleteOrder(idx)}
+                      style={{
+                        background: "rgba(255,255,255,0.1)",
+                        border: "none",
+                        color: "#fff",
+                        width: "26px",
+                        height: "26px",
+                        borderRadius: "8px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* ===== Body ===== */}
+                <div style={{ padding: "20px" }}>
+                  {/* Customer name + time */}
+                  <div style={{ marginBottom: "16px" }}>
+                    <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "#111827" }}>
+                      {order.customerName || "Walk-in Customer"}
+                    </h3>
+                    <div style={{ fontSize: "12px", color: "#9CA3AF", marginTop: "4px" }}>
+                      🕒{" "}
+                      {new Date(order.createdAt).toLocaleString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        hour12: true,
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Contact info */}
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "10px",
+                      background: "#F9FAFB",
+                      borderRadius: "16px",
+                      padding: "14px 16px",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", color: "#374151" }}>
+                      <Phone size={14} color="#6B7280" /> {order.phone}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        fontSize: "13px",
+                        color: "#374151",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                      title={order.email}
+                    >
+                      📧 {order.email}
+                    </div>
+                  </div>
+
+                  {/* Address */}
+                  <div
+                    style={{
+                      background: "#F9FAFB",
+                      borderRadius: "16px",
+                      padding: "14px 16px",
+                      marginBottom: "16px",
+                      fontSize: "13px",
+                      color: "#374151",
+                      lineHeight: "1.5",
+                    }}
+                  >
+                    <div style={{ fontWeight: "700", color: "#111827", marginBottom: "4px" }}>📍 Delivery Address</div>
+                    {order.address}, {order.city} — {order.pincode}
+                  </div>
+
+                  {/* Ordered products */}
+                  <div>
+                    <div
+                      style={{
+                        fontSize: "13px",
+                        fontWeight: "800",
+                        color: "#111827",
+                        marginBottom: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                      }}
+                    >
+                      🛒 Ordered Products ({order.items?.length || 0})
+                    </div>
+
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      {order.items?.map((it, i) => (
+                        <div
+                          key={i}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            background: "#fff",
+                            border: "1px solid #E5E7EB",
+                            borderRadius: "12px",
+                            padding: "10px 14px",
+                          }}
+                        >
+                          <div>
+                            <div style={{ fontWeight: "700", color: "#111827", fontSize: "13.5px" }}>
+                              {it.productName}
+                            </div>
+                            <div style={{ fontSize: "12px", color: "#6B7280", marginTop: "2px" }}>
+                              ₹{it.price} × {it.quantity}
+                            </div>
+                          </div>
+                          <div style={{ fontSize: "16px", fontWeight: "800", color: "#16A34A" }}>
+                            ₹{it.price * it.quantity}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* ===== Footer ===== */}
+                <div
+                  style={{
+                    marginTop: "auto",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "16px 20px",
+                    borderTop: "1px solid #F1F5F9",
+                    background: "#FAFAFA",
+                  }}
+                >
+                  <div>
+                    <div style={{ fontSize: "11px", color: "#9CA3AF", fontWeight: "600" }}>PAYABLE</div>
+                    <div style={{ fontSize: "20px", fontWeight: "900", color: "#111827" }}>₹{order.totalAmount}</div>
+                  </div>
+                  <button
+                    onClick={() => window.open(`https://wa.me/91${order.phone}`, "_blank")}
+                    style={{
+                      background: "#16A34A",
+                      color: "#fff",
+                      border: "none",
+                      padding: "10px 20px",
+                      borderRadius: "12px",
+                      fontWeight: "800",
+                      fontSize: "12px",
+                      letterSpacing: "0.5px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                    }}
+                  >
+                    WHATSAPP
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            {orders.length === 0 && (
+              <div style={styles.emptyState}>
+                <Bell size={40} color="#cbd5e1" />
+                <p>No active orders in the queue.</p>
+              </div>
+            )}
+          </div>
         )}
+
+
+
       </main>
 
       {/* Floating Action Button for Mobile */}

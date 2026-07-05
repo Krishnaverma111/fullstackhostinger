@@ -205,7 +205,7 @@ const PlantStore = ({ inventory = [], addToCart }) => {
             Curated <br /> Collection
           </h1>
           <div className="flex flex-wrap gap-2">
-             {["All", "Indoor", "Outdoor", "Succulent"].map(tab => (
+             {["All", "Indoor", "Outdoor", ].map(tab => (
                <button 
                 key={tab} 
                 onClick={() => setActiveTab(tab)}
