@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { X, ShieldCheck } from "lucide-react";
 import axios from "axios";
 
-const API = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-export default function CheckoutModal({ 
-  isOpen, 
-  onClose, 
-  cartItems, 
-  totalAmount, 
+export default function CheckoutModal({
+  isOpen,
+  onClose,
+  cartItems,
+  totalAmount,
   clearCart,
-  navigate 
+  navigate
 }) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -33,7 +33,7 @@ export default function CheckoutModal({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.name || !formData.mobile || !formData.address || !formData.pincode) {
       alert('Please fill all required fields');
       return;
@@ -65,7 +65,10 @@ export default function CheckoutModal({
       // ✅ API CALL - DATA SAVE
       const response = await axios.post(`${API}/orders/confirm`, orderPayload);
 
+
       console.log('✅ Order Response:', response.data);
+       console.log("API:", API);
+      console.log("Request URL:", `${API}/orders/confirm`);
 
       setLoading(false);
       onClose();
@@ -73,7 +76,7 @@ export default function CheckoutModal({
       // ✅ ========== FORCE REDIRECT - 100% KAAM KAREGA ========== ✅
       if (response.data.success) {
         console.log('🔀 Force redirecting to /checkout');
-        
+
         // ✅ Save data to localStorage
         localStorage.setItem('checkoutData', JSON.stringify({
           orderId: response.data.orderId,
@@ -94,7 +97,7 @@ export default function CheckoutModal({
           })),
           amount: totalAmount
         }));
-        
+
         // ✅ FORCE REDIRECT - Yeh 100% kaam karega
         window.location.href = '/checkout';
       }
@@ -103,7 +106,7 @@ export default function CheckoutModal({
       console.error("❌ Order Save Failed:", error);
       alert('Order Save Failed: ' + (error.response?.data?.message || error.message));
       setLoading(false);
-      
+
       // ✅ Fallback - Save to localStorage and redirect
       const fallbackData = {
         customer: {
@@ -200,6 +203,7 @@ export default function CheckoutModal({
           </div>
         </form>
       </div>
+     
     </div>
   );
 }
