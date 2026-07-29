@@ -326,8 +326,8 @@ const AnimatedRoutes = ({
         <Route path="/payment" element={<PageTransition><Payment setCartItems={setCartItems} /></PageTransition>} />
         
         {/* ✅ ADD THESE TWO ROUTES */}
-        <Route path="/order-success" element={<PageTransition><PaymentSuccess /></PageTransition>} />
-        <Route path="/payment-failed" element={<PageTransition><PaymentFailed /></PageTransition>} />
+        {/* <Route path="/order-success" element={<PageTransition><PaymentSuccess /></PageTransition>} /> */}
+        {/* <Route path="/payment-failed" element={<PageTransition><PaymentFailed /></PageTransition>} /> */}
 
         {/* Product Routes */}
         <Route path="/offers" element={<PageTransition><Offers inventory={inventory} addToCart={addToCart} /></PageTransition>} />
