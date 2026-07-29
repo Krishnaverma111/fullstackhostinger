@@ -267,7 +267,7 @@ import Location from "./pages/Location";
 import Checkout from "./pages/Checkout";  
 import Payment from "./pages/Payment";
 // import PaymentSuccess from "./pages/paymentsuccess";  // ✅ ADD THIS
-import PaymentFailed from "./pages/PaymentFailed";    // ✅ ADD THIS
+// import PaymentFailed from "./pages/PaymentFailed";    // ✅ ADD THIS
 
 const Pots = Planter;
 
