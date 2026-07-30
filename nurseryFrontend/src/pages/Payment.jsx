@@ -4,8 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ShieldCheck, Loader2 } from 'lucide-react';
 
-// const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-const API_URL = 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// const API_URL = 'http://localhost:5000';
 
 export default function Payment({ setCartItems }) {
   const location = useLocation();
